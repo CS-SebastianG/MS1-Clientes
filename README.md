@@ -2,14 +2,14 @@
 
 Microservicio de gestión de clientes y pedidos para el proyecto de Cloud Computing (CS2032).
 
-##  Tecnologías
+## Tecnologías
 
-- **Lenguaje:** Python 3.11+
+- **Lenguaje:** Python 3.11
 - **Framework:** FastAPI
 - **Base de datos:** MySQL 8.0
 - **Contenedores:** Docker + Docker Compose
 
-##  Endpoints
+## Endpoints
 
 Documentación interactiva (Swagger UI): `http://localhost:8000/docs`
 
@@ -17,17 +17,19 @@ Documentación interactiva (Swagger UI): `http://localhost:8000/docs`
 |--------|----------|-------------|
 | GET | `/` | Info del servicio |
 | GET | `/health` | Health check |
-| GET | `/clientes` | Lista clientes |
+| GET | `/clientes` | Lista clientes (paginado) |
 | GET | `/clientes/{id}` | Cliente por ID |
 | GET | `/clientes/{id}/pedidos` | Pedidos de un cliente |
-| GET | `/clientes/buscar/?email=` | Buscar por email |
-| GET | `/pedidos` | Lista pedidos (con JOIN) |
+| GET | `/clientes/buscar/?email=` | Buscar clientes por email |
+| GET | `/clientes/estadisticas/top` | Top clientes por cantidad de pedidos |
+| GET | `/pedidos` | Lista pedidos con info del cliente |
 | GET | `/pedidos/{id}` | Pedido por ID |
-| GET | `/pedidos/estado/{estado}` | Pedidos por estado |
-| GET | `/pedidos/estadisticas/por-estado` | Estadísticas por estado |
-| GET | `/clientes/estadisticas/top` | Top clientes |
+| GET | `/pedidos/{id}/detalle` | Platos de un pedido (sin precios) |
+| POST | `/pedidos` | Crear un pedido con platos |
+| GET | `/pedidos/estado/{estado}` | Pedidos filtrados por estado |
+| GET | `/pedidos/estadisticas/por-estado` | Cantidad de pedidos por estado |
 
-##  Cómo ejecutar
+## Cómo ejecutar
 
 ### Requisitos
 - Docker Desktop
