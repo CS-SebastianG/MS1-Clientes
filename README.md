@@ -4,7 +4,7 @@ Microservicio de gestión de clientes y pedidos para el proyecto de Cloud Comput
 
 ##  Tecnologías
 
-- **Lenguaje:** Python 3.11
+- **Lenguaje:** Python 3.11+
 - **Framework:** FastAPI
 - **Base de datos:** MySQL 8.0
 - **Contenedores:** Docker + Docker Compose
