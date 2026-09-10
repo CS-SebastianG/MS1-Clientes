@@ -11,40 +11,34 @@ DB_CONFIG = {
     "database": os.getenv("DB_NAME", "restaurante_db"),
 }
 
+connection_pool = None
 
-def _crear_pool(intentos=10, espera_seg=3):
-    """Intenta crear el pool con reintentos, por si MySQL aun no acepta
-    conexiones apenas arranca el contenedor (aunque el healthcheck ya haya
-    pasado). Evita que un fallo puntual de timing deje connection_pool en
-    None para siempre."""
-    for intento in range(1, intentos + 1):
+
+def crear_pool(max_intentos=10, espera=3):
+    global connection_pool
+    for intento in range(1, max_intentos + 1):
         try:
-            pool = pooling.MySQLConnectionPool(
+            connection_pool = pooling.MySQLConnectionPool(
                 pool_name="ms1_pool",
                 pool_size=5,
                 pool_reset_session=True,
                 **DB_CONFIG
             )
-            print("Pool de conexiones MySQL creado correctamente")
-            return pool
+            print(f" Pool de conexiones MySQL creado correctamente (intento {intento})")
+            return
         except mysql.connector.Error as e:
-            print(f"Intento {intento}/{intentos}: error al crear el pool: {e}")
-            if intento < intentos:
-                time.sleep(espera_seg)
-    print("No se pudo crear el pool de conexiones tras varios intentos")
-    return None
+            print(f" Intento {intento}/{max_intentos} falló: {e}")
+            if intento < max_intentos:
+                time.sleep(espera)
+    raise Exception(" No se pudo crear el pool de conexiones tras varios intentos")
 
 
-connection_pool = _crear_pool()
+crear_pool()
 
 
 def get_connection():
-    global connection_pool
     if connection_pool is None:
-        # Ultimo intento bajo demanda, por si MySQL tardo mas de lo esperado
-        connection_pool = _crear_pool(intentos=1)
-        if connection_pool is None:
-            raise Exception("Pool de conexiones no disponible")
+        raise Exception("Pool de conexiones no disponible")
     return connection_pool.get_connection()
 
 
@@ -56,9 +50,9 @@ def test_connection():
         count = cursor.fetchone()[0]
         cursor.close()
         conn.close()
-        return f"Conexión Ok :) . Clientes en BD: {count}"
+        return f" Conexión OK :) . Clientes en BD: {count}"
     except Exception as e:
-        return f"Error: {e}"
+        return f" Error :( : {e}"
 
 
 if __name__ == "__main__":
