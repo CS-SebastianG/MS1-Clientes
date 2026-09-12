@@ -39,3 +39,5 @@ Documentación interactiva (Swagger UI): `http://localhost:8000/docs`
 
 ```bash
 docker compose up -d --build
+python scripts/generate_fake_data.py
+
