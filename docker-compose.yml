@@ -1,7 +1,7 @@
 services:
   mysql-db:
     image: mysql:8.0
-    container_name: ms1-mysql
+    container_name: ms1-mysql-local
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -23,7 +23,7 @@ services:
 
   ms1-api:
     build: .
-    container_name: ms1-api
+    container_name: ms1-api-local
     restart: unless-stopped
     depends_on:
       mysql-db:
