@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
 from app.database import get_connection
+import os
+import httpx
 
 app = FastAPI(
     title="MS1 - Clientes y Pedidos",
@@ -18,6 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+MS2_URL = os.getenv("MS2_URL", "http://ms2-api:8082")
+
 
 class DetalleItem(BaseModel):
     plato_id: int
@@ -28,6 +32,15 @@ class DetalleItem(BaseModel):
 class PedidoCreate(BaseModel):
     cliente_id: int
     items: List[DetalleItem]
+
+
+async def validar_plato_en_ms2(plato_id: int) -> bool:
+    try:
+        async with httpx.AsyncClient(timeout=3.0) as client:
+            response = await client.get(f"{MS2_URL}/api/v1/platos/{plato_id}")
+            return response.status_code == 200
+    except Exception:
+        return True
 
 
 @app.get("/", tags=["Root"])
@@ -178,7 +191,7 @@ def detalle_pedido(pedido_id: int):
 
 
 @app.post("/pedidos", tags=["Pedidos"], status_code=201)
-def crear_pedido(pedido: PedidoCreate):
+async def crear_pedido(pedido: PedidoCreate):
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -187,6 +200,16 @@ def crear_pedido(pedido: PedidoCreate):
         cursor.close()
         conn.close()
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
+
+    for item in pedido.items:
+        existe = await validar_plato_en_ms2(item.plato_id)
+        if not existe:
+            cursor.close()
+            conn.close()
+            raise HTTPException(
+                status_code=404,
+                detail=f"Plato {item.plato_id} no existe en el menú (MS2)"
+            )
 
     cursor.execute(
         "INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES (%s, NOW(), 'pendiente')",
