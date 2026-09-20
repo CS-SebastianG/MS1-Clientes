@@ -7,7 +7,7 @@ fake = Faker('es_ES')
 
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "127.0.0.1"),
-    "port": int(os.getenv("DB_PORT", 3307)),
+    "port": int(os.getenv("DB_PORT", 3306)),
     "user": os.getenv("DB_USER", "root"),
     "password": os.getenv("DB_PASSWORD", "rootpassword"),
     "database": os.getenv("DB_NAME", "restaurante_db"),
@@ -17,6 +17,7 @@ CLIENTES_A_GENERAR = 5000
 PEDIDOS_A_GENERAR = 20000
 PLATOS_POR_PEDIDO_MIN = 1
 PLATOS_POR_PEDIDO_MAX = 5
+MAX_PLATO_ID = 50
 ESTADOS = ['pendiente', 'en preparacion', 'entregado', 'cancelado']
 NOTAS_POSIBLES = [
     'Sin cebolla', 'Sin sal', 'Extra picante', 'Para llevar',
@@ -33,7 +34,7 @@ def generar_clientes(cursor, cantidad):
             fake.name(),
             fake.unique.email(),
             fake.phone_number()[:20],
-            fake.address()[:200],
+            fake.address()[:200].replace('\n', ' ').replace('\r', ''),
             fake.date_between(start_date='-2y', end_date='today')
         ))
     cursor.executemany(
@@ -118,7 +119,7 @@ def main():
     detalles_existentes = cursor.fetchone()[0]
 
     if detalles_existentes == 0:
-        generar_detalles(cursor, pedido_ids, 20500)
+        generar_detalles(cursor, pedido_ids, MAX_PLATO_ID)
         conn.commit()
 
     print("Datos generados correctamente")
