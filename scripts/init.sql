@@ -50,7 +50,7 @@ INSERT INTO clientes (nombre, email, telefono, direccion, fecha_registro) VALUES
 ('Luis Ramirez',   'luis.ramirez@example.com',  '912345678', 'Jr. Puno 789, Cercado',          '2024-02-15'),
 ('Sofia Mendoza',  'sofia.mendoza@example.com', '998877665', 'Calle Bolivar 321, San Isidro',  '2024-03-22'),
 ('Diego Herrera',  'diego.herrera@example.com', '955443322', 'Av. Arequipa 1500, Lince',       '2024-04-05'),
-('Valeria Rios',   'valeria.rios@example.com',  '944332211', 'Jr. Amazonas 250, Brena',        '2024-05-12');
+('Valeria Rios',   'valeria.rios@example.com',  '944332211', 'Jr. Amazonas 250, Breña',        '2024-05-12');
 
 INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES
 (1, '2024-06-01 13:30:00', 'entregado'),
@@ -62,15 +62,15 @@ INSERT INTO pedidos (cliente_id, fecha_pedido, estado) VALUES
 
 INSERT INTO pedido_detalle (pedido_id, plato_id, cantidad, notas) VALUES
 (1, 1, 2, 'Sin cebolla'),
-(1, 4601, 1, NULL),
+(1, 46, 1, NULL),
 (2, 8, 1, 'Extra picante'),
-(2, 18101, 2, NULL),
-(3, 4602, 3, NULL),
-(3, 11201, 1, 'Termino medio'),
-(4, 11202, 1, 'Para llevar'),
-(4, 18102, 2, 'Sin canela'),
-(5, 4601, 2, 'Sin sal'),
-(5, 18109, 1, NULL),
+(2, 18, 2, NULL),
+(3, 46, 3, NULL),
+(3, 11, 1, 'Termino medio'),
+(4, 11, 1, 'Para llevar'),
+(4, 18, 2, 'Sin canela'),
+(5, 46, 2, 'Sin sal'),
+(5, 18, 1, NULL),
 (6, 1, 1, NULL),
-(6, 4607, 1, 'Sin culantro'),
-(6, 18103, 1, NULL);
+(6, 46, 1, 'Sin culantro'),
+(6, 18, 1, NULL);
